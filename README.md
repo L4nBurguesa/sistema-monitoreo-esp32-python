@@ -105,3 +105,8 @@ No se abre /dev/ttyUSB0	-> Verificar conexión USB y permisos (dialout). En Virt
 Error vmwgfx al iniciar Ubuntu	-> Cambiar controlador gráfico a VBoxSVGA y desactivar aceleración 3D.
 Flask no responde	-> Asegurar que el puerto 5000 no esté ocupado. Usar netstat -tulpn.
 ThingSpeak no recibe datos	-> Revisar API key y que el canal tenga fields 1-4 configurados.
+
+
+## Notas
+
+En la estructura sugerida por el proyecto aparecía un módulo data_store.py para manejar la escritura del archivo CSV. Sin embargo, durante el desarrollo decidí integrar esa funcionalidad directamente dentro de serial_reader.py. ¿Por qué? Porque la lectura del puerto serie y el guardado de los datos son dos tareas muy acopladas: cada línea que llega se escribe inmediatamente en el CSV, y no hay otra parte del sistema que necesite escribir en ese archivo. Al mantener la escritura dentro del mismo módulo que lee el puerto, el código se vuelve más sencillo de seguir y hay menos riesgo de errores de sincronización. Además, la función read_serial ya recibe el nombre del archivo como parámetro, lo que permite cambiar la ubicación fácilmente. En resumen, opté por una organización más compacta pero igualmente clara, y en la práctica el sistema funciona correctamente.
