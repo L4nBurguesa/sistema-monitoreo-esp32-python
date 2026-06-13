@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitoreo de Sensor Analógico</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            color: #3905e2;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .stats {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            flex: 1;
+            min-width: 250px;
+        }
+        .plots {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            flex: 2;
+        }
+        .plot-img {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+        }
+        .status {
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 5px;
+            display: inline-block;
+        }
+        .status-BAJO { background-color: #f8d7da; color: #721c24; }
+        .status-NORMAL { background-color: #d4edda; color: #155724; }
+        .status-ALTO { background-color: #fff3cd; color: #856404; }
+        button {
+            margin-top: 10px;
+            padding: 8px 16px;
+            background-color: #3905e2;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #3905e2;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        td, th {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <h1>Sistema de Monitoreo Analógico</h1>
+    <p><strong>Sensor:</strong> Potenciómetro - ADC conectado al ESP32</p>
+    <p><strong>Estudiante:</strong> Laura Burgos</p>
+
+    <div class="container">
+        <div class="stats">
+            <h2>Estadísticas</h2>
+            <table>
+                <tr><th>Muestras totales</th><td id="muestras">{{ stats.muestras }}</td></tr>
+                <tr><th>Último ADC</th><td id="ultimo_adc">{{ stats.ultimo_adc }}</td></tr>
+                <tr><th>Último voltaje</th><td id="ultimo_voltaje">{{ stats.ultimo_voltaje }}</td></tr>
+                <tr><th>Promedio voltaje</th><td id="promedio">{{ stats.promedio_voltaje }}</td></tr>
+                <tr><th>Mínimo voltaje</th><td id="min">{{ stats.min_voltaje }}</td></tr>
+                <tr><th>Máximo voltaje</th><td id="max">{{ stats.max_voltaje }}</td></tr>
+                <tr><th>Desviación estándar</th><td id="std">{{ stats.std_voltaje }}</td></tr>
+                <tr><th>Promedio móvil (último)</th><td id="prom_movil">{{ stats.promedio_movil }}</td></tr>
+                <tr><th>Estado</th><td><span id="estado" class="status status-{{ stats.estado }}">{{ stats.estado }}</span></td></tr>
+            </table>
+            <button onclick="refreshData()">Actualizar datos</button>
+            <button onclick="refreshPlots()">Regenerar gráficas</button>
+        </div>
+
+        <div class="plots">
+            <h2>Gráficas</h2>
+            <h3>Señal en el tiempo</h3>
+            <img class="plot-img" src="{{ url_for('static', filename='plots/sensor_tiempo.png') }}" alt="Señal en el tiempo">
+            <h3>Histograma</h3>
+            <img class="plot-img" src="{{ url_for('static', filename='plots/histograma.png') }}" alt="Histograma">
+            <h3>Promedio móvil</h3>
+            <img class="plot-img" src="{{ url_for('static', filename='plots/promedio_movil.png') }}" alt="Promedio móvil">
+        </div>
+    </div>
+
+    <script>
+        // función para actualizar las estadísticas sin recargar la página
+        function refreshData() {
+            fetch('/stats')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('muestras').innerText = data.muestras;
+                    document.getElementById('ultimo_adc').innerText = data.ultimo_adc;
+                    document.getElementById('ultimo_voltaje').innerText = data.ultimo_voltaje;
+                    document.getElementById('promedio').innerText = data.promedio_voltaje;
+                    document.getElementById('min').innerText = data.min_voltaje;
+                    document.getElementById('max').innerText = data.max_voltaje;
+                    document.getElementById('std').innerText = data.std_voltaje;
+                    document.getElementById('prom_movil').innerText = data.promedio_movil;
+                    const estadoSpan = document.getElementById('estado');
+                    estadoSpan.innerText = data.estado;
+                    estadoSpan.className = 'status status-' + data.estado;
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        function refreshPlots() {
+            fetch('/refresh_plots')
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.status);
+                    location.reload();  // Recargar la página para ver nuevas gráficas
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        // cada 5 segundos, actualizamos los números sin recargar la página
+        setInterval(refreshData, 5000);
+    </script>
+</body>
+</html>
