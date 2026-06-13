@@ -48,7 +48,6 @@ README.md # Este archivo
 ## Instalación y ejecución (Ubuntu)
 
 1. **Clonar el repositorio** :
-   ```bash
   git clone https://github.com/USUARIO/sistema-monitoreo-esp32-python.git
    cd sistema-monitoreo-esp32-python
 
@@ -91,11 +90,12 @@ El programa envía datos cada 15 segundos. Configurar tu THINGSPEAK_API_KEY en t
 
 
 ## Capturas de funcionamiento
+<img width="947" height="658" alt="imagen" src="https://github.com/user-attachments/assets/37d98247-9fbb-4374-8b4e-335535def2d3" />
 
-<img width="928" height="770" alt="imagen" src="https://github.com/user-attachments/assets/55a17639-ce21-49d9-a08b-8f87f8ed6955" />
-<img width="928" height="770" alt="imagen" src="https://github.com/user-attachments/assets/4b8cd916-0d87-462f-9986-a5bff1bb144b" />
+<img width="558" height="337" alt="imagen" src="https://github.com/user-attachments/assets/a9a16182-cc39-432d-995b-f3e637355a4a" />
 
-<img width="777" height="609" alt="imagen" src="https://github.com/user-attachments/assets/b1f85308-9eb2-483f-b7c5-eefae6a1d754" />
+<img width="1326" height="784" alt="imagen" src="https://github.com/user-attachments/assets/d251de16-60f8-4a32-82f7-309a63052788" />
+
 
 
 ## Problemas comunes y soluciones
